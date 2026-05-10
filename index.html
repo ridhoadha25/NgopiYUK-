@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ngopi Yuk! - Coffee Experience</title>
+
+    <!-- SEO -->
+    <meta name="description" content="Ngopi Yuk! Tempat menikmati kopi terbaik dengan suasana nyaman dan modern.">
+    <meta name="keywords" content="kopi, coffee shop, espresso, cappuccino">
+    <meta name="author" content="M. Ridho Adha">
+
+    <!-- Favicon -->
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/751/751621.png">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        coffee: {
+                            cream: '#d7b99c',
+                            brown: '#5d4037',
+                            dark: '#3d2b1f',
+                            orange: '#c97b36'
+                        }
+                    },
+
+                    fontFamily: {
+                        poppins: ['Poppins', 'sans-serif'],
+                        inter: ['Inter', 'sans-serif']
+                    },
+
+                    animation: {
+                        float: 'float 3s ease-in-out infinite',
+                        fade: 'fadeIn 1s ease-in-out'
+                    },
+
+                    keyframes: {
+                        float: {
+                            '0%,100%': {
+                                transform: 'translateY(0px)'
+                            },
+                            '50%': {
+                                transform: 'translateY(-10px)'
+                            }
+                        },
+
+                        fadeIn: {
+                            '0%': {
+                                opacity: '0',
+                                transform: 'translateY(20px)'
+                            },
+
+                            '100%': {
+                                opacity: '1',
+                                transform: 'translateY(0)'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Inter:wght@300;400;600&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+        html{
+            scroll-behavior: smooth;
+        }
+
+        body{
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .font-inter{
+            font-family: 'Inter', sans-serif;
+        }
+
+        .bg-coffee-cream{
+            background-color: #d7b99c;
+        }
+
+        .product-card:hover{
+            transform: translateY(-10px);
+        }
+
+        .active-nav{
+            color: #fb923c;
+        }
+
+    </style>
+</head>
+
+<body class="bg-white text-gray-800 transition duration-300">
+
+<!-- ================= LOADER ================= -->
+<div id="loader"
+class="fixed inset-0 bg-[#2a1b15] flex items-center justify-center z-50">
+    <i class="fas fa-coffee text-5xl text-orange-500 animate-bounce"></i>
+</div>
+
+<!-- ================= TOAST ================= -->
+<div id="toast"
+class="fixed bottom-5 right-5 bg-orange-600 text-white px-6 py-3 rounded-lg hidden z-50 shadow-lg">
+</div>
+
+<!-- ================= BACK TO TOP ================= -->
+<button id="topBtn"
+class="fixed bottom-5 left-5 bg-orange-600 hover:bg-orange-700 text-white p-3 rounded-full hidden z-50">
+    <i class="fas fa-arrow-up"></i>
+</button>
+
+<!-- ================= HERO ================= -->
+<section class="relative h-screen w-full bg-cover bg-center bg-no-repeat"
+style="background-image: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.3)),
+url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2070&auto=format&fit=crop');">
+
+    <!-- NAVBAR -->
+    <nav class="flex items-center justify-between px-6 md:px-10 py-6 absolute top-0 w-full z-20 text-white">
+
+        <!-- LOGO -->
+        <div class="flex items-center gap-2">
+            <div class="bg-orange-500 p-2 rounded-lg text-white animate-float">
+                <i class="fas fa-coffee text-xl"></i>
+            </div>
+
+            <span class="text-2xl font-bold tracking-tight">
+                Ngopi Yuk!
+            </span>
+        </div>
+
+        <!-- MENU DESKTOP -->
+        <div class="hidden md:flex items-center space-x-8 text-sm font-medium">
+            <a href="#menu" class="hover:text-orange-400 transition">Menu</a>
+            <a href="#tentang" class="hover:text-orange-400 transition">Tentang Kami</a>
+            <a href="#testimoni" class="hover:text-orange-400 transition">Testimoni</a>
+            <a href="#kontak" class="hover:text-orange-400 transition">Kontak</a>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="flex items-center space-x-5">
+
+            <button id="searchBtn" class="hover:text-orange-400">
+                <i class="fas fa-search"></i>
+            </button>
+
+            <button class="bg-orange-500 hover:bg-orange-600 px-5 py-2 rounded-full text-sm font-semibold transition">
+                Beli Sekarang
+            </button>
+
+            <button id="darkBtn" class="text-xl">
+                <i class="far fa-moon"></i>
+            </button>
+
+            <!-- MOBILE MENU -->
+            <button id="menuBtn" class="md:hidden text-2xl">
+                <i class="fas fa-bars"></i>
+            </button>
+
+        </div>
+
+    </nav>
+
+    <!-- MOBILE MENU -->
+    <div id="mobileMenu"
+    class="hidden absolute top-20 left-0 w-full bg-[#2a1b15] p-6 flex flex-col gap-4 text-white z-50 md:hidden">
+
+        <a href="#menu">Menu</a>
+        <a href="#tentang">Tentang Kami</a>
+        <a href="#testimoni">Testimoni</a>
+        <a href="#kontak">Kontak</a>
+
+    </div>
+
+    <!-- HERO CONTENT -->
+    <div class="container mx-auto h-full flex flex-col justify-center px-6 md:px-10 text-white">
+
+        <div class="max-w-2xl animate-fade">
+
+            <h1 class="text-5xl md:text-6xl font-bold leading-tight mb-6">
+                Temukan Kopi Sesuai
+                <br>
+                Keinginan Anda
+            </h1>
+
+            <p class="text-gray-300 text-lg mb-10 leading-relaxed">
+                Ngopi Yuk! adalah surga bagi para pecinta kopi,
+                tempat Anda bisa menikmati beragam cita rasa kopi terbaik.
+            </p>
+
+            <div class="flex flex-wrap gap-4">
+
+                <button class="bg-orange-800 hover:bg-orange-900 px-8 py-3 rounded-md font-semibold text-lg transition">
+                    Pesan Sekarang
+                </button>
+
+                <button class="text-white hover:text-orange-400 px-8 py-3 font-semibold text-lg flex items-center gap-2">
+                    Jelajahi Lebih Lanjut
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= MENU ================= -->
+<section id="menu" class="py-20 px-6 max-w-6xl mx-auto font-inter">
+
+    <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold mb-4">
+            Kopi Terlaris Kami
+        </h2>
+
+        <p class="text-gray-500 max-w-2xl mx-auto">
+            Nikmati pilihan kopi favorit pelanggan kami.
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+        <!-- CARD -->
+        <div class="product-card bg-white p-4 rounded-lg shadow-md border border-gray-100 transition duration-300">
+
+            <img src="images/esspresso.jpg"
+            class="w-full h-48 object-cover rounded-md mb-4">
+
+            <h3 class="text-lg font-bold mb-2">
+                Espresso
+            </h3>
+
+            <p class="text-xs text-gray-500 mb-4">
+                Kopi tajam dan pekat untuk energi pagi hari.
+            </p>
+
+            <div class="flex gap-2">
+
+                <button class="buyBtn bg-orange-800 text-white text-[10px] px-4 py-2 rounded-md uppercase font-bold">
+                    Beli Sekarang
+                </button>
+
+                <button class="cartBtn bg-orange-900 text-white text-[10px] px-4 py-2 rounded-md uppercase font-bold">
+                    Keranjang
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- CARD -->
+        <div class="product-card bg-white p-4 rounded-lg shadow-md border border-gray-100 transition duration-300">
+
+            <img src="images/capuccino.jpg"
+            class="w-full h-48 object-cover rounded-md mb-4">
+
+            <h3 class="text-lg font-bold mb-2">
+                Cappuccino
+            </h3>
+
+            <p class="text-xs text-gray-500 mb-4">
+                Perpaduan espresso dan susu yang lembut.
+            </p>
+
+            <div class="flex gap-2">
+
+                <button class="buyBtn bg-orange-800 text-white text-[10px] px-4 py-2 rounded-md uppercase font-bold">
+                    Beli Sekarang
+                </button>
+
+                <button class="cartBtn bg-orange-900 text-white text-[10px] px-4 py-2 rounded-md uppercase font-bold">
+                    Keranjang
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- CARD -->
+        <div class="product-card bg-white p-4 rounded-lg shadow-md border border-gray-100 transition duration-300">
+
+            <img src="images/americano.jpg"
+            class="w-full h-48 object-cover rounded-md mb-4">
+
+            <h3 class="text-lg font-bold mb-2">
+                Americano
+            </h3>
+
+            <p class="text-xs text-gray-500 mb-4">
+                Kopi ringan namun tetap nikmat.
+            </p>
+
+            <div class="flex gap-2">
+
+                <button class="buyBtn bg-orange-800 text-white text-[10px] px-4 py-2 rounded-md uppercase font-bold">
+                    Beli Sekarang
+                </button>
+
+                <button class="cartBtn bg-orange-900 text-white text-[10px] px-4 py-2 rounded-md uppercase font-bold">
+                    Keranjang
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- CARD -->
+        <div class="product-card bg-white p-4 rounded-lg shadow-md border border-gray-100 transition duration-300">
+
+            <img src="images/luwak hitam.jpg"
+            class="w-full h-48 object-cover rounded-md mb-4">
+
+            <h3 class="text-lg font-bold mb-2">
+                Luwak hitam
+            </h3>
+
+            <p class="text-xs text-gray-500 mb-4">
+                Kopi ringan namun tetap nikmat.
+            </p>
+
+            <div class="flex gap-2">
+
+                <button class="buyBtn bg-orange-800 text-white text-[10px] px-4 py-2 rounded-md uppercase font-bold">
+                    Beli Sekarang
+                </button>
+
+                <button class="cartBtn bg-orange-900 text-white text-[10px] px-4 py-2 rounded-md uppercase font-bold">
+                    Keranjang
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- CARD -->
+        <div class="product-card bg-white p-4 rounded-lg shadow-md border border-gray-100 transition duration-300">
+
+            <img src="images/machiato.jpg"
+            class="w-full h-48 object-cover rounded-md mb-4">
+
+            <h3 class="text-lg font-bold mb-2">
+                Macchiato
+            </h3>
+
+            <p class="text-xs text-gray-500 mb-4">
+                Kopi ringan namun tetap nikmat.
+            </p>
+
+            <div class="flex gap-2">
+
+                <button class="buyBtn bg-orange-800 text-white text-[10px] px-4 py-2 rounded-md uppercase font-bold">
+                    Beli Sekarang
+                </button>
+
+                <button class="cartBtn bg-orange-900 text-white text-[10px] px-4 py-2 rounded-md uppercase font-bold">
+                    Keranjang
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- CARD -->
+        <div class="product-card bg-white p-4 rounded-lg shadow-md border border-gray-100 transition duration-300">
+
+            <img src="images/latte.jpg"
+            class="w-full h-48 object-cover rounded-md mb-4">
+
+            <h3 class="text-lg font-bold mb-2">
+                Latte
+            </h3>
+
+            <p class="text-xs text-gray-500 mb-4">
+                Kopi ringan namun tetap nikmat.
+            </p>
+
+            <div class="flex gap-2">
+
+                <button class="buyBtn bg-orange-800 text-white text-[10px] px-4 py-2 rounded-md uppercase font-bold">
+                    Beli Sekarang
+                </button>
+
+                <button class="cartBtn bg-orange-900 text-white text-[10px] px-4 py-2 rounded-md uppercase font-bold">
+                    Keranjang
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= TENTANG ================= -->
+<section id="tentang"
+class="bg-coffee-cream py-20 px-6 md:px-20 min-h-[500px] flex items-center overflow-hidden">
+
+    <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+
+        <div class="relative flex justify-center">
+
+            <div class="absolute w-64 h-80 border-2 border-[#3d2b1f]
+            rotate-[-5deg] translate-x-4 translate-y-4 hidden md:block">
+            </div>
+
+            <div class="relative w-64 h-80 overflow-hidden shadow-2xl rotate-[3deg] border-4 border-white">
+
+                <img src="https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=500&auto=format&fit=crop"
+                class="w-full h-full object-cover">
+
+            </div>
+
+        </div>
+
+        <div class="text-[#3d2b1f]">
+
+            <h2 class="text-3xl font-bold mb-6">
+                Tentang Kami
+            </h2>
+
+            <div class="space-y-4 text-sm leading-relaxed">
+
+                <p>
+                    Kami berkomitmen menyajikan kopi terbaik.
+                </p>
+
+                <p>
+                    Kopi bukan sekadar minuman,
+                    tetapi seni dan pengalaman.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= TESTIMONI ================= -->
+<section id="testimoni"
+class="relative py-20 bg-cover bg-center bg-fixed"
+style="background-image:
+linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+url('https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=2070&auto=format&fit=crop');">
+
+    <div class="container mx-auto px-6">
+
+        <!-- TITLE -->
+        <div class="text-center text-white mb-14">
+
+            <h2 class="text-4xl font-bold mb-4">
+                Apa Kata Pelanggan
+            </h2>
+
+            <p class="text-gray-300 max-w-2xl mx-auto">
+                Kepuasan pelanggan adalah prioritas utama kami.
+                Berikut beberapa ulasan dari pelanggan setia Ngopi Yuk!
+            </p>
+
+        </div>
+
+        <!-- TESTIMONI CARD -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+            <!-- CARD 1 -->
+            <div class="bg-[#d7b99c] p-6 rounded-2xl shadow-2xl
+            hover:-translate-y-2 transition duration-300">
+
+                <div class="flex items-center gap-4 mb-4">
+
+                    <img src="https://randomuser.me/api/portraits/women/1.jpg"
+                    class="w-14 h-14 rounded-full border-2 border-white">
+
+                    <div>
+
+                        <h4 class="font-bold text-[#3d2b1f]">
+                            Puan Maharani
+                        </h4>
+
+                        <div class="text-orange-700 text-sm">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <p class="text-sm italic text-[#3d2b1f] leading-relaxed">
+                    "Cappuccino nya enak banget,
+                    tempatnya nyaman dan aesthetic!"
+                </p>
+
+            </div>
+
+            <!-- CARD 2 -->
+            <div class="bg-[#d7b99c] p-6 rounded-2xl shadow-2xl
+            hover:-translate-y-2 transition duration-300">
+
+                <div class="flex items-center gap-4 mb-4">
+
+                    <img src="https://randomuser.me/api/portraits/men/2.jpg"
+                    class="w-14 h-14 rounded-full border-2 border-white">
+
+                    <div>
+
+                        <h4 class="font-bold text-[#3d2b1f]">
+                            Fufufafa
+                        </h4>
+
+                        <div class="text-orange-700 text-sm">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <p class="text-sm italic text-[#3d2b1f] leading-relaxed">
+                    "Pelayanan cepat dan rasa kopinya mantap.
+                    Recommended banget!"
+                </p>
+
+            </div>
+
+            <!-- CARD 3 -->
+            <div class="bg-[#d7b99c] p-6 rounded-2xl shadow-2xl
+            hover:-translate-y-2 transition duration-300">
+
+                <div class="flex items-center gap-4 mb-4">
+
+                    <img src="https://randomuser.me/api/portraits/men/3.jpg"
+                    class="w-14 h-14 rounded-full border-2 border-white">
+
+                    <div>
+
+                        <h4 class="font-bold text-[#3d2b1f]">
+                            Wiwi De Tok
+                        </h4>
+
+                        <div class="text-orange-700 text-sm">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <p class="text-sm italic text-[#3d2b1f] leading-relaxed">
+                    "Tempat ngopi favorit buat santai sambil kerja.
+                    Kopinya premium!"
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer id="kontak"
+class="bg-[#2a1b15] text-white py-16 px-6">
+
+    <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
+
+        <div>
+
+            <div class="flex items-center gap-2 mb-6 text-xl font-bold">
+                <i class="fas fa-coffee text-orange-500"></i>
+                Ngopi Yuk!
+            </div>
+
+            <p class="text-xs text-gray-400 leading-relaxed mb-6">
+                Ngopi bukan sekadar minum kopi.
+            </p>
+
+            <div class="flex gap-4 mb-4">
+                <i class="fab fa-facebook"></i>
+                <i class="fab fa-instagram"></i>
+                <i class="fab fa-twitter"></i>
+                <i class="fab fa-tiktok"></i>
+            </div>
+
+            <p class="text-xs">
+                <i class="fas fa-map-marker-alt text-orange-500 mr-2"></i>
+                Tanah Putih, Rokan Hilir, Riau
+            </p>
+
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 text-xs">
+
+            <div>
+
+                <h4 class="font-bold mb-4 uppercase">
+                    Halaman
+                </h4>
+
+                <ul class="space-y-2">
+                    <li>Home</li>
+                    <li>Menu</li>
+                    <li>Tentang</li>
+                </ul>
+
+            </div>
+
+            <div>
+
+                <h4 class="font-bold mb-4 uppercase">
+                    Hubungi Kami
+                </h4>
+
+                <p>
+                    ridhouiux@gmail.com
+                </p>
+
+                <p>
+                    +62 823-6193-2285
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="flex flex-col justify-end">
+
+            <div class="flex">
+
+                <input type="text"
+                id="emailInput"
+                placeholder="Alamat Email"
+                class="bg-[#d7b99c] p-2 text-black text-xs w-full">
+
+                <button id="subscribeBtn"
+                class="bg-orange-600 px-4 py-2 text-xs font-bold">
+
+                    Berlangganan
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="border-t border-gray-700 mt-12 pt-6 text-center text-[10px] text-gray-500">
+        © <span id="year"></span> Ngopi Yuk! | Designed by M. Ridho Adha
+    </div>
+</footer>
+<script src="script.js"></script>
+</body>
+</html>
