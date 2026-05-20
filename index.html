@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,43 +25,28 @@
                 extend: {
                     colors: {
                         coffee: {
-                            cream: '#d7b99c',
+                            cream: '#f5e6d3', // Diperhalus agar tidak terlalu pekat kusam
                             brown: '#5d4037',
-                            dark: '#3d2b1f',
-                            orange: '#c97b36'
+                            dark: '#231510',  // Lebih pekat premium
+                            orange: '#d97706'
                         }
                     },
-
                     fontFamily: {
                         poppins: ['Poppins', 'sans-serif'],
                         inter: ['Inter', 'sans-serif']
                     },
-
                     animation: {
-                        float: 'float 3s ease-in-out infinite',
-                        fade: 'fadeIn 1s ease-in-out'
+                        float: 'float 4s ease-in-out infinite',
+                        fade: 'fadeIn 1s cubic-bezier(0.16, 1, 0.3, 1)'
                     },
-
                     keyframes: {
                         float: {
-                            '0%,100%': {
-                                transform: 'translateY(0px)'
-                            },
-                            '50%': {
-                                transform: 'translateY(-10px)'
-                            }
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-8px)' }
                         },
-
                         fadeIn: {
-                            '0%': {
-                                opacity: '0',
-                                transform: 'translateY(20px)'
-                            },
-
-                            '100%': {
-                                opacity: '1',
-                                transform: 'translateY(0)'
-                            }
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
                         }
                     }
                 }
@@ -70,615 +55,418 @@
     </script>
 
     <!-- Font Awesome -->
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Inter:wght@300;400;600&display=swap"
-          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
-
-        html{
-            scroll-behavior: smooth;
-        }
-
-        body{
+        body {
             font-family: 'Poppins', sans-serif;
         }
-
-        .font-inter{
+        .font-inter {
             font-family: 'Inter', sans-serif;
         }
-
-        .bg-coffee-cream{
-            background-color: #d7b99c;
+        /* Efek glassmorphism halus untuk navbar saat di-scroll nanti */
+        .glass-nav {
+            background-color: rgba(35, 21, 16, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
-
-        .product-card:hover{
-            transform: translateY(-10px);
-        }
-
-        .active-nav{
-            color: #fb923c;
-        }
-
     </style>
 </head>
 
-<body class="bg-white text-gray-800 transition duration-300">
+<body class="bg-stone-50 dark:bg-zinc-900 text-stone-800 dark:text-stone-100 transition-colors duration-300 antialiased selection:bg-amber-700 selection:text-white">
 
 <!-- ================= LOADER ================= -->
-<div id="loader"
-class="fixed inset-0 bg-[#2a1b15] flex items-center justify-center z-50">
-    <i class="fas fa-coffee text-5xl text-orange-500 animate-bounce"></i>
+<div id="loader" class="fixed inset-0 bg-coffee-dark flex items-center justify-center z-50">
+    <div class="text-center">
+        <i class="fas fa-coffee text-6xl text-amber-500 animate-bounce mb-2"></i>
+        <p class="text-stone-400 text-xs tracking-widest uppercase">Sedang Menyeduh...</p>
+    </div>
 </div>
 
 <!-- ================= TOAST ================= -->
-<div id="toast"
-class="fixed bottom-5 right-5 bg-orange-600 text-white px-6 py-3 rounded-lg hidden z-50 shadow-lg">
+<div id="toast" class="fixed bottom-6 right-6 bg-stone-900 dark:bg-amber-700 text-white px-6 py-4 rounded-xl hidden z-50 shadow-2xl border border-stone-800 transform transition-all duration-300 flex items-center gap-3">
 </div>
 
 <!-- ================= BACK TO TOP ================= -->
-<button id="topBtn"
-class="fixed bottom-5 left-5 bg-orange-600 hover:bg-orange-700 text-white p-3 rounded-full hidden z-50">
+<button id="topBtn" class="fixed bottom-6 left-6 bg-amber-600 hover:bg-amber-700 text-white w-12 h-12 rounded-full hidden z-50 shadow-xl transition-all duration-300 hover:scale-110 flex items-center justify-center">
     <i class="fas fa-arrow-up"></i>
 </button>
 
 <!-- ================= HERO ================= -->
-<section class="relative h-screen w-full bg-cover bg-center bg-no-repeat"
-style="background-image: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.3)),
+<section class="relative h-screen w-full bg-cover bg-center bg-no-repeat flex items-center"
+style="background-image: linear-gradient(to right, rgba(20, 10, 5, 0.85), rgba(20, 10, 5, 0.4)),
 url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2070&auto=format&fit=crop');">
 
     <!-- NAVBAR -->
-    <nav class="flex items-center justify-between px-6 md:px-10 py-6 absolute top-0 w-full z-20 text-white">
+    <nav class="glass-nav flex items-center justify-between px-6 md:px-16 py-4 fixed top-0 w-full z-40 text-white border-b border-white/10 transition-all duration-300">
 
         <!-- LOGO -->
-        <div class="flex items-center gap-2">
-            <div class="bg-orange-500 p-2 rounded-lg text-white animate-float">
+        <div class="flex items-center gap-3 group cursor-pointer">
+            <div class="bg-amber-600 p-2.5 rounded-xl text-white animate-float shadow-lg shadow-amber-600/30">
                 <i class="fas fa-coffee text-xl"></i>
             </div>
-
-            <span class="text-2xl font-bold tracking-tight">
+            <span class="text-xl font-bold tracking-tight bg-gradient-to-r from-white to-amber-200 bg-clip-text text-transparent">
                 Ngopi Yuk!
             </span>
         </div>
 
         <!-- MENU DESKTOP -->
-        <div class="hidden md:flex items-center space-x-8 text-sm font-medium">
-            <a href="#menu" class="hover:text-orange-400 transition">Menu</a>
-            <a href="#tentang" class="hover:text-orange-400 transition">Tentang Kami</a>
-            <a href="#testimoni" class="hover:text-orange-400 transition">Testimoni</a>
-            <a href="#kontak" class="hover:text-orange-400 transition">Kontak</a>
+        <div class="hidden md:flex items-center space-x-10 text-sm font-medium tracking-wide">
+            <a href="#menu" class="hover:text-amber-400 transition-colors relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-amber-400 after:left-0 after:-bottom-1 hover:after:w-full after:transition-all">Menu</a>
+            <a href="#tentang" class="hover:text-amber-400 transition-colors relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-amber-400 after:left-0 after:-bottom-1 hover:after:w-full after:transition-all">Tentang Kami</a>
+            <a href="#testimoni" class="hover:text-amber-400 transition-colors relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-amber-400 after:left-0 after:-bottom-1 hover:after:w-full after:transition-all">Testimoni</a>
+            <a href="#kontak" class="hover:text-amber-400 transition-colors relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-amber-400 after:left-0 after:-bottom-1 hover:after:w-full after:transition-all">Kontak</a>
         </div>
 
-        <!-- RIGHT -->
-        <div class="flex items-center space-x-5">
-
-            <button id="searchBtn" class="hover:text-orange-400">
+        <!-- RIGHT OPTIONS -->
+        <div class="flex items-center space-x-4">
+            <button id="searchBtn" class="hover:text-amber-400 p-2 text-lg transition">
                 <i class="fas fa-search"></i>
             </button>
 
-            <button class="bg-orange-500 hover:bg-orange-600 px-5 py-2 rounded-full text-sm font-semibold transition">
-                Beli Sekarang
-            </button>
-
-            <button id="darkBtn" class="text-xl">
+            <button id="darkBtn" class="text-lg p-2 hover:text-amber-400 transition">
                 <i class="far fa-moon"></i>
             </button>
 
-            <!-- MOBILE MENU -->
-            <button id="menuBtn" class="md:hidden text-2xl">
-                <i class="fas fa-bars"></i>
+            <button class="hidden sm:inline-block bg-amber-600 hover:bg-amber-700 active:scale-95 px-6 py-2.5 rounded-full text-xs font-semibold tracking-wider uppercase transition shadow-lg shadow-amber-600/20">
+                Beli Sekarang
             </button>
 
+            <!-- MOBILE MENU BTN -->
+            <button id="menuBtn" class="md:hidden text-xl p-2 hover:text-amber-400 transition">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
-
     </nav>
 
-    <!-- MOBILE MENU -->
-    <div id="mobileMenu"
-    class="hidden absolute top-20 left-0 w-full bg-[#2a1b15] p-6 flex flex-col gap-4 text-white z-50 md:hidden">
-
-        <a href="#menu">Menu</a>
-        <a href="#tentang">Tentang Kami</a>
-        <a href="#testimoni">Testimoni</a>
-        <a href="#kontak">Kontak</a>
-
+    <!-- MOBILE MENU MODAL -->
+    <div id="mobileMenu" class="hidden fixed top-[73px] left-0 w-full bg-coffee-dark/95 backdrop-blur-lg p-6 flex flex-col gap-5 text-white z-40 md:hidden border-b border-white/10 shadow-xl transition-all">
+        <a href="#menu" class="font-medium p-2 border-b border-white/5 hover:text-amber-400">Menu</a>
+        <a href="#tentang" class="font-medium p-2 border-b border-white/5 hover:text-amber-400">Tentang Kami</a>
+        <a href="#testimoni" class="font-medium p-2 border-b border-white/5 hover:text-amber-400">Testimoni</a>
+        <a href="#kontak" class="font-medium p-2 hover:text-amber-400">Kontak</a>
     </div>
 
     <!-- HERO CONTENT -->
-    <div class="container mx-auto h-full flex flex-col justify-center px-6 md:px-10 text-white">
-
-        <div class="max-w-2xl animate-fade">
-
-            <h1 class="text-5xl md:text-6xl font-bold leading-tight mb-6">
-                Temukan Kopi Sesuai
-                <br>
-                Keinginan Anda
+    <div class="container mx-auto px-6 md:px-16 text-white pt-20">
+        <div class="max-w-3xl animate-fade">
+            <span class="inline-block text-xs font-bold tracking-widest text-amber-400 uppercase bg-amber-400/10 px-4 py-1.5 rounded-full mb-6 border border-amber-400/20">
+                Premium Coffee Experience
+            </span>
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.15] mb-6 tracking-tight">
+                Temukan Kopi Sesuai <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">Keinginan Anda</span>
             </h1>
 
-            <p class="text-gray-300 text-lg mb-10 leading-relaxed">
-                Ngopi Yuk! adalah surga bagi para pecinta kopi,
-                tempat Anda bisa menikmati beragam cita rasa kopi terbaik.
+            <p class="text-stone-300 text-base md:text-lg mb-10 leading-relaxed max-w-xl font-light">
+                Ngopi Yuk! adalah rumah bagi para pecinta rasa. Kami memadukan biji kopi pilihan nusantara dengan atmosfer modern demi kenyamanan seduhan Anda.
             </p>
 
             <div class="flex flex-wrap gap-4">
-
-                <button class="bg-orange-800 hover:bg-orange-900 px-8 py-3 rounded-md font-semibold text-lg transition">
+                <a href="#menu" class="bg-amber-600 hover:bg-amber-700 active:scale-95 px-8 py-3.5 rounded-xl font-medium text-sm tracking-wide shadow-lg shadow-amber-600/30 transition-all text-center min-w-[160px]">
                     Pesan Sekarang
-                </button>
-
-                <button class="text-white hover:text-orange-400 px-8 py-3 font-semibold text-lg flex items-center gap-2">
-                    Jelajahi Lebih Lanjut
-                </button>
-
+                </a>
+                <a href="#tentang" class="group border border-white/30 hover:border-white bg-white/5 hover:bg-white/10 px-8 py-3.5 rounded-xl font-medium text-sm tracking-wide transition-all flex items-center justify-center gap-2 min-w-[160px]">
+                    Jelajahi Cerita <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                </a>
             </div>
-
         </div>
-
     </div>
-
 </section>
 
-<!-- ================= MENU ================= -->
-<section id="menu" class="py-20 px-6 max-w-6xl mx-auto font-inter">
-
-    <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold mb-4">
-            Kopi Terlaris Kami
-        </h2>
-
-        <p class="text-gray-500 max-w-2xl mx-auto">
-            Nikmati pilihan kopi favorit pelanggan kami.
+<!-- ================= MENU SECTION ================= -->
+<section id="menu" class="py-24 px-6 max-w-7xl mx-auto font-inter">
+    <div class="text-center mb-16">
+        <span class="text-xs font-bold tracking-widest text-amber-600 dark:text-amber-400 uppercase">Menu Favorit</span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4 tracking-tight">Kopi Terlaris Kami</h2>
+        <div class="w-12 h-1 bg-amber-600 mx-auto rounded-full mb-4"></div>
+        <p class="text-stone-500 dark:text-stone-400 max-w-xl mx-auto font-light text-sm">
+            Nikmati pilihan kopi mahakarya barista kami yang paling banyak digemari oleh para pelanggan setia.
         </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-
-        <!-- CARD -->
-        <div class="product-card bg-white p-4 rounded-lg shadow-md border border-gray-100 transition duration-300">
-
-            <img src="images/esspresso.jpg"
-            class="w-full h-48 object-cover rounded-md mb-4">
-
-            <h3 class="text-lg font-bold mb-2">
-                Espresso
-            </h3>
-
-            <p class="text-xs text-gray-500 mb-4">
-                Kopi tajam dan pekat untuk energi pagi hari.
-            </p>
-
-            <div class="flex gap-2">
-
-                <button class="buyBtn bg-orange-800 text-white text-[10px] px-4 py-2 rounded-md uppercase font-bold">
-                    Beli Sekarang
-                </button>
-
-                <button class="cartBtn bg-orange-900 text-white text-[10px] px-4 py-2 rounded-md uppercase font-bold">
-                    Keranjang
-                </button>
-
+    <!-- GRID MENU -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        
+        <!-- CARD 1 -->
+        <div class="group bg-white dark:bg-zinc-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-stone-100 dark:border-zinc-700/50 transition-all duration-300 flex flex-col transform hover:-translate-y-2">
+            <div class="relative overflow-hidden h-52">
+                <img src="images/esspresso.jpg" alt="Espresso" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                <span class="absolute top-4 right-4 bg-amber-600 text-white text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">Best Seller</span>
             </div>
-
+            <div class="p-6 flex flex-col flex-grow">
+                <h3 class="text-xl font-bold mb-2 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">Espresso</h3>
+                <p class="text-xs text-stone-500 dark:text-stone-400 mb-6 leading-relaxed font-light flex-grow">
+                    Kopi murni yang tajam, pekat, dan kaya akan crema tebal untuk booster energi instan pagi Anda.
+                </p>
+                <div class="grid grid-cols-2 gap-3 pt-4 border-t border-stone-100 dark:border-zinc-700">
+                    <button class="buyBtn bg-amber-600 hover:bg-amber-700 text-white text-xs py-3 rounded-xl font-bold tracking-wide uppercase transition active:scale-95">Beli</button>
+                    <button class="cartBtn border border-stone-200 dark:border-zinc-600 hover:bg-stone-50 dark:hover:bg-zinc-700 text-stone-700 dark:text-stone-200 text-xs py-3 rounded-xl font-bold tracking-wide uppercase transition flex items-center justify-center gap-2"><i class="fas fa-shopping-basket"></i> +</button>
+                </div>
+            </div>
         </div>
 
-        <!-- CARD -->
-        <div class="product-card bg-white p-4 rounded-lg shadow-md border border-gray-100 transition duration-300">
-
-            <img src="images/capuccino.jpg"
-            class="w-full h-48 object-cover rounded-md mb-4">
-
-            <h3 class="text-lg font-bold mb-2">
-                Cappuccino
-            </h3>
-
-            <p class="text-xs text-gray-500 mb-4">
-                Perpaduan espresso dan susu yang lembut.
-            </p>
-
-            <div class="flex gap-2">
-
-                <button class="buyBtn bg-orange-800 text-white text-[10px] px-4 py-2 rounded-md uppercase font-bold">
-                    Beli Sekarang
-                </button>
-
-                <button class="cartBtn bg-orange-900 text-white text-[10px] px-4 py-2 rounded-md uppercase font-bold">
-                    Keranjang
-                </button>
-
+        <!-- CARD 2 -->
+        <div class="group bg-white dark:bg-zinc-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-stone-100 dark:border-zinc-700/50 transition-all duration-300 flex flex-col transform hover:-translate-y-2">
+            <div class="relative overflow-hidden h-52">
+                <img src="images/capuccino.jpg" alt="Cappuccino" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
             </div>
-
+            <div class="p-6 flex flex-col flex-grow">
+                <h3 class="text-xl font-bold mb-2 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">Cappuccino</h3>
+                <p class="text-xs text-stone-500 dark:text-stone-400 mb-6 leading-relaxed font-light flex-grow">
+                    Keseimbangan sempurna antara kepekatan espresso premium, kelembutan susu murni, dan foam tebal.
+                </p>
+                <div class="grid grid-cols-2 gap-3 pt-4 border-t border-stone-100 dark:border-zinc-700">
+                    <button class="buyBtn bg-amber-600 hover:bg-amber-700 text-white text-xs py-3 rounded-xl font-bold tracking-wide uppercase transition active:scale-95">Beli</button>
+                    <button class="cartBtn border border-stone-200 dark:border-zinc-600 hover:bg-stone-50 dark:hover:bg-zinc-700 text-stone-700 dark:text-stone-200 text-xs py-3 rounded-xl font-bold tracking-wide uppercase transition flex items-center justify-center gap-2"><i class="fas fa-shopping-basket"></i> +</button>
+                </div>
+            </div>
         </div>
 
-        <!-- CARD -->
-        <div class="product-card bg-white p-4 rounded-lg shadow-md border border-gray-100 transition duration-300">
-
-            <img src="images/americano.jpg"
-            class="w-full h-48 object-cover rounded-md mb-4">
-
-            <h3 class="text-lg font-bold mb-2">
-                Americano
-            </h3>
-
-            <p class="text-xs text-gray-500 mb-4">
-                Kopi ringan namun tetap nikmat.
-            </p>
-
-            <div class="flex gap-2">
-
-                <button class="buyBtn bg-orange-800 text-white text-[10px] px-4 py-2 rounded-md uppercase font-bold">
-                    Beli Sekarang
-                </button>
-
-                <button class="cartBtn bg-orange-900 text-white text-[10px] px-4 py-2 rounded-md uppercase font-bold">
-                    Keranjang
-                </button>
-
+        <!-- CARD 3 -->
+        <div class="group bg-white dark:bg-zinc-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-stone-100 dark:border-zinc-700/50 transition-all duration-300 flex flex-col transform hover:-translate-y-2">
+            <div class="relative overflow-hidden h-52">
+                <img src="images/americano.jpg" alt="Americano" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
             </div>
-
+            <div class="p-6 flex flex-col flex-grow">
+                <h3 class="text-xl font-bold mb-2 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">Americano</h3>
+                <p class="text-xs text-stone-500 dark:text-stone-400 mb-6 leading-relaxed font-light flex-grow">
+                    Gaya kopi hitam klasik yang diringankan dengan air panas namun tetap mempertahankan notes rasa yang kaya.
+                </p>
+                <div class="grid grid-cols-2 gap-3 pt-4 border-t border-stone-100 dark:border-zinc-700">
+                    <button class="buyBtn bg-amber-600 hover:bg-amber-700 text-white text-xs py-3 rounded-xl font-bold tracking-wide uppercase transition active:scale-95">Beli</button>
+                    <button class="cartBtn border border-stone-200 dark:border-zinc-600 hover:bg-stone-50 dark:hover:bg-zinc-700 text-stone-700 dark:text-stone-200 text-xs py-3 rounded-xl font-bold tracking-wide uppercase transition flex items-center justify-center gap-2"><i class="fas fa-shopping-basket"></i> +</button>
+                </div>
+            </div>
         </div>
 
-        <!-- CARD -->
-        <div class="product-card bg-white p-4 rounded-lg shadow-md border border-gray-100 transition duration-300">
-
-            <img src="images/luwak hitam.jpg"
-            class="w-full h-48 object-cover rounded-md mb-4">
-
-            <h3 class="text-lg font-bold mb-2">
-                Luwak hitam
-            </h3>
-
-            <p class="text-xs text-gray-500 mb-4">
-                Kopi ringan namun tetap nikmat.
-            </p>
-
-            <div class="flex gap-2">
-
-                <button class="buyBtn bg-orange-800 text-white text-[10px] px-4 py-2 rounded-md uppercase font-bold">
-                    Beli Sekarang
-                </button>
-
-                <button class="cartBtn bg-orange-900 text-white text-[10px] px-4 py-2 rounded-md uppercase font-bold">
-                    Keranjang
-                </button>
-
+        <!-- CARD 4 -->
+        <div class="group bg-white dark:bg-zinc-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-stone-100 dark:border-zinc-700/50 transition-all duration-300 flex flex-col transform hover:-translate-y-2">
+            <div class="relative overflow-hidden h-52">
+                <img src="images/luwak hitam.jpg" alt="Luwak Hitam" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
             </div>
-
+            <div class="p-6 flex flex-col flex-grow">
+                <h3 class="text-xl font-bold mb-2 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">Luwak Hitam</h3>
+                <p class="text-xs text-stone-500 dark:text-stone-400 mb-6 leading-relaxed font-light flex-grow">
+                    Kopi premium eksklusif dengan cita rasa super smooth, tingkat keasaman rendah, dan aroma khas.
+                </p>
+                <div class="grid grid-cols-2 gap-3 pt-4 border-t border-stone-100 dark:border-zinc-700">
+                    <button class="buyBtn bg-amber-600 hover:bg-amber-700 text-white text-xs py-3 rounded-xl font-bold tracking-wide uppercase transition active:scale-95">Beli</button>
+                    <button class="cartBtn border border-stone-200 dark:border-zinc-600 hover:bg-stone-50 dark:hover:bg-zinc-700 text-stone-700 dark:text-stone-200 text-xs py-3 rounded-xl font-bold tracking-wide uppercase transition flex items-center justify-center gap-2"><i class="fas fa-shopping-basket"></i> +</button>
+                </div>
+            </div>
         </div>
 
-        <!-- CARD -->
-        <div class="product-card bg-white p-4 rounded-lg shadow-md border border-gray-100 transition duration-300">
-
-            <img src="images/machiato.jpg"
-            class="w-full h-48 object-cover rounded-md mb-4">
-
-            <h3 class="text-lg font-bold mb-2">
-                Macchiato
-            </h3>
-
-            <p class="text-xs text-gray-500 mb-4">
-                Kopi ringan namun tetap nikmat.
-            </p>
-
-            <div class="flex gap-2">
-
-                <button class="buyBtn bg-orange-800 text-white text-[10px] px-4 py-2 rounded-md uppercase font-bold">
-                    Beli Sekarang
-                </button>
-
-                <button class="cartBtn bg-orange-900 text-white text-[10px] px-4 py-2 rounded-md uppercase font-bold">
-                    Keranjang
-                </button>
-
+        <!-- CARD 5 -->
+        <div class="group bg-white dark:bg-zinc-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-stone-100 dark:border-zinc-700/50 transition-all duration-300 flex flex-col transform hover:-translate-y-2">
+            <div class="relative overflow-hidden h-52">
+                <img src="images/machiato.jpg" alt="Macchiato" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
             </div>
-
+            <div class="p-6 flex flex-col flex-grow">
+                <h3 class="text-xl font-bold mb-2 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">Macchiato</h3>
+                <p class="text-xs text-stone-500 dark:text-stone-400 mb-6 leading-relaxed font-light flex-grow">
+                    Sajian estetik espresso yang "ditandai" dengan sedikit tuangan susu hangat kental di atas permukaannya.
+                </p>
+                <div class="grid grid-cols-2 gap-3 pt-4 border-t border-stone-100 dark:border-zinc-700">
+                    <button class="buyBtn bg-amber-600 hover:bg-amber-700 text-white text-xs py-3 rounded-xl font-bold tracking-wide uppercase transition active:scale-95">Beli</button>
+                    <button class="cartBtn border border-stone-200 dark:border-zinc-600 hover:bg-stone-50 dark:hover:bg-zinc-700 text-stone-700 dark:text-stone-200 text-xs py-3 rounded-xl font-bold tracking-wide uppercase transition flex items-center justify-center gap-2"><i class="fas fa-shopping-basket"></i> +</button>
+                </div>
+            </div>
         </div>
 
-        <!-- CARD -->
-        <div class="product-card bg-white p-4 rounded-lg shadow-md border border-gray-100 transition duration-300">
-
-            <img src="images/latte.jpg"
-            class="w-full h-48 object-cover rounded-md mb-4">
-
-            <h3 class="text-lg font-bold mb-2">
-                Latte
-            </h3>
-
-            <p class="text-xs text-gray-500 mb-4">
-                Kopi ringan namun tetap nikmat.
-            </p>
-
-            <div class="flex gap-2">
-
-                <button class="buyBtn bg-orange-800 text-white text-[10px] px-4 py-2 rounded-md uppercase font-bold">
-                    Beli Sekarang
-                </button>
-
-                <button class="cartBtn bg-orange-900 text-white text-[10px] px-4 py-2 rounded-md uppercase font-bold">
-                    Keranjang
-                </button>
-
+        <!-- CARD 6 -->
+        <div class="group bg-white dark:bg-zinc-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-stone-100 dark:border-zinc-700/50 transition-all duration-300 flex flex-col transform hover:-translate-y-2">
+            <div class="relative overflow-hidden h-52">
+                <img src="images/latte.jpg" alt="Latte" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
             </div>
-
+            <div class="p-6 flex flex-col flex-grow">
+                <h3 class="text-xl font-bold mb-2 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">Caffè Latte</h3>
+                <p class="text-xs text-stone-500 dark:text-stone-400 mb-6 leading-relaxed font-light flex-grow">
+                    Komposisi susu steamed milk yang lebih dominan, memberikan rasa lembut gurih yang ramah di lambung.
+                </p>
+                <div class="grid grid-cols-2 gap-3 pt-4 border-t border-stone-100 dark:border-zinc-700">
+                    <button class="buyBtn bg-amber-600 hover:bg-amber-700 text-white text-xs py-3 rounded-xl font-bold tracking-wide uppercase transition active:scale-95">Beli</button>
+                    <button class="cartBtn border border-stone-200 dark:border-zinc-600 hover:bg-stone-50 dark:hover:bg-zinc-700 text-stone-700 dark:text-stone-200 text-xs py-3 rounded-xl font-bold tracking-wide uppercase transition flex items-center justify-center gap-2"><i class="fas fa-shopping-basket"></i> +</button>
+                </div>
+            </div>
         </div>
 
     </div>
-
 </section>
 
-<!-- ================= TENTANG ================= -->
-<section id="tentang"
-class="bg-coffee-cream py-20 px-6 md:px-20 min-h-[500px] flex items-center overflow-hidden">
-
-    <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-
+<!-- ================= TENTANG SECTION ================= -->
+<section id="tentang" class="bg-amber-100/50 dark:bg-zinc-800/40 py-24 px-6 md:px-16 flex items-center overflow-hidden">
+    <div class="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center max-w-7xl">
+        
+        <!-- Sisi Gambar dengan Efek Kreatif -->
         <div class="relative flex justify-center">
-
-            <div class="absolute w-64 h-80 border-2 border-[#3d2b1f]
-            rotate-[-5deg] translate-x-4 translate-y-4 hidden md:block">
+            <!-- Frame dekoratif belakang -->
+            <div class="absolute w-72 h-96 border-4 border-amber-700/20 rounded-2xl rotate-[-6deg] translate-x-4 translate-y-4 hidden md:block"></div>
+            
+            <!-- Frame Gambar Utama -->
+            <div class="relative w-72 h-96 overflow-hidden shadow-2xl rounded-2xl rotate-[3deg] border-8 border-white dark:border-zinc-800 bg-white">
+                <img src="https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=500&auto=format&fit=crop" alt="Coffee Brewing" class="w-full h-full object-cover hover:scale-105 transition duration-500">
             </div>
-
-            <div class="relative w-64 h-80 overflow-hidden shadow-2xl rotate-[3deg] border-4 border-white">
-
-                <img src="https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=500&auto=format&fit=crop"
-                class="w-full h-full object-cover">
-
-            </div>
-
         </div>
 
-        <div class="text-[#3d2b1f]">
-
-            <h2 class="text-3xl font-bold mb-6">
-                Tentang Kami
-            </h2>
-
-            <div class="space-y-4 text-sm leading-relaxed">
-
+        <!-- Sisi Teks -->
+        <div class="text-stone-800 dark:text-stone-100">
+            <span class="text-xs font-bold tracking-widest text-amber-600 dark:text-amber-400 uppercase">Our Story</span>
+            <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-6 tracking-tight">Menyajikan Dedikasi Dalam Setiap Cangkir</h2>
+            <div class="w-12 h-1 bg-amber-600 rounded-full mb-6"></div>
+            
+            <div class="space-y-4 text-sm md:text-base leading-relaxed text-stone-600 dark:text-stone-300 font-light">
                 <p>
-                    Kami berkomitmen menyajikan kopi terbaik.
+                    Kami percaya bahwa kopi terbaik lahir dari proses yang jujur. Dimulai dari pemilihan biji kopi ceri merah pilihan, teknik pemanggangan yang presisi, hingga seni ekstraksi oleh para barista berpengalaman.
                 </p>
-
                 <p>
-                    Kopi bukan sekadar minuman,
-                    tetapi seni dan pengalaman.
+                    Bagi kami, <strong>Ngopi Yuk!</strong> bukan sekadar tentang tempat meminum cairan hitam berkafein, melainkan ruang temu, wadah kolaborasi, dan tempat melahirkan cerita baru yang berkesan.
                 </p>
-
             </div>
-
         </div>
-
     </div>
-
 </section>
 
-<!-- ================= TESTIMONI ================= -->
-<section id="testimoni"
-class="relative py-20 bg-cover bg-center bg-fixed"
-style="background-image:
-linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+<!-- ================= TESTIMONI SECTION ================= -->
+<section id="testimoni" class="relative py-24 bg-cover bg-center bg-fixed"
+style="background-image: linear-gradient(rgba(15, 8, 5, 0.85), rgba(15, 8, 5, 0.85)),
 url('https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=2070&auto=format&fit=crop');">
 
-    <div class="container mx-auto px-6">
-
-        <!-- TITLE -->
-        <div class="text-center text-white mb-14">
-
-            <h2 class="text-4xl font-bold mb-4">
-                Apa Kata Pelanggan
-            </h2>
-
-            <p class="text-gray-300 max-w-2xl mx-auto">
-                Kepuasan pelanggan adalah prioritas utama kami.
-                Berikut beberapa ulasan dari pelanggan setia Ngopi Yuk!
+    <div class="container mx-auto px-6 max-w-7xl">
+        <div class="text-center text-white mb-16">
+            <span class="text-xs font-bold tracking-widest text-amber-400 uppercase">Review</span>
+            <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4 tracking-tight">Apa Kata Pelanggan</h2>
+            <p class="text-stone-400 max-w-xl mx-auto font-light text-sm">
+                Kepuasan Anda adalah kebanggaan terbesar kami. Berikut testimoni tulus dari sahabat penikmat kopi Ngopi Yuk!
             </p>
-
         </div>
 
-        <!-- TESTIMONI CARD -->
+        <!-- GRID TESTIMONI -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 
             <!-- CARD 1 -->
-            <div class="bg-[#d7b99c] p-6 rounded-2xl shadow-2xl
-            hover:-translate-y-2 transition duration-300">
-
-                <div class="flex items-center gap-4 mb-4">
-
-                    <img src="https://randomuser.me/api/portraits/women/1.jpg"
-                    class="w-14 h-14 rounded-full border-2 border-white">
-
-                    <div>
-
-                        <h4 class="font-bold text-[#3d2b1f]">
-                            Puan Maharani
-                        </h4>
-
-                        <div class="text-orange-700 text-sm">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
+            <div class="bg-white/5 backdrop-blur-md p-8 rounded-2xl border border-white/10 shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-4 mb-6">
+                        <img src="https://randomuser.me/api/portraits/women/1.jpg" alt="Puan" class="w-12 h-12 rounded-full border-2 border-amber-500 object-cover">
+                        <div>
+                            <h4 class="font-semibold text-white text-base">Puan Maharani</h4>
+                            <div class="text-amber-400 text-xs mt-0.5">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
                         </div>
-
                     </div>
-
+                    <p class="text-sm italic text-stone-300 leading-relaxed font-light">
+                        "Cappuccino di sini benar-benar juara lembut foamenya stabil. Ditambah lagi suasana cafe yang sangat aesthetic, tenang, cocok sekali buat me-time atau diskusi penting."
+                    </p>
                 </div>
-
-                <p class="text-sm italic text-[#3d2b1f] leading-relaxed">
-                    "Cappuccino nya enak banget,
-                    tempatnya nyaman dan aesthetic!"
-                </p>
-
             </div>
 
             <!-- CARD 2 -->
-            <div class="bg-[#d7b99c] p-6 rounded-2xl shadow-2xl
-            hover:-translate-y-2 transition duration-300">
-
-                <div class="flex items-center gap-4 mb-4">
-
-                    <img src="https://randomuser.me/api/portraits/men/2.jpg"
-                    class="w-14 h-14 rounded-full border-2 border-white">
-
-                    <div>
-
-                        <h4 class="font-bold text-[#3d2b1f]">
-                            Fufufafa
-                        </h4>
-
-                        <div class="text-orange-700 text-sm">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
+            <div class="bg-white/5 backdrop-blur-md p-8 rounded-2xl border border-white/10 shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-4 mb-6">
+                        <img src="https://randomuser.me/api/portraits/men/2.jpg" alt="Fufufafa" class="w-12 h-12 rounded-full border-2 border-amber-500 object-cover">
+                        <div>
+                            <h4 class="font-semibold text-white text-base">Fufufafa</h4>
+                            <div class="text-amber-400 text-xs mt-0.5">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
                         </div>
-
                     </div>
-
+                    <p class="text-sm italic text-stone-300 leading-relaxed font-light">
+                        "Pelayanannya sangat cepat dan ramah, rasanya mantap pas di lidah saya. Espresso-nya benar-benar langsung bikin seger. Sangat direkomendasikan!"
+                    </p>
                 </div>
-
-                <p class="text-sm italic text-[#3d2b1f] leading-relaxed">
-                    "Pelayanan cepat dan rasa kopinya mantap.
-                    Recommended banget!"
-                </p>
-
             </div>
 
             <!-- CARD 3 -->
-            <div class="bg-[#d7b99c] p-6 rounded-2xl shadow-2xl
-            hover:-translate-y-2 transition duration-300">
-
-                <div class="flex items-center gap-4 mb-4">
-
-                    <img src="https://randomuser.me/api/portraits/men/3.jpg"
-                    class="w-14 h-14 rounded-full border-2 border-white">
-
-                    <div>
-
-                        <h4 class="font-bold text-[#3d2b1f]">
-                            Wiwi De Tok
-                        </h4>
-
-                        <div class="text-orange-700 text-sm">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
+            <div class="bg-white/5 backdrop-blur-md p-8 rounded-2xl border border-white/10 shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-4 mb-6">
+                        <img src="https://randomuser.me/api/portraits/men/3.jpg" alt="Wiwi" class="w-12 h-12 rounded-full border-2 border-amber-500 object-cover">
+                        <div>
+                            <h4 class="font-semibold text-white text-base">Wiwi De Tok</h4>
+                            <div class="text-amber-400 text-xs mt-0.5">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
                         </div>
-
                     </div>
-
+                    <p class="text-sm italic text-stone-300 leading-relaxed font-light">
+                        "Tempat ngopi paling andalan untuk WFH. Fasilitas Wi-Fi kencang, colokan aman, dan tentunya varian racikan kopinya premium kelas atas."
+                    </p>
                 </div>
-
-                <p class="text-sm italic text-[#3d2b1f] leading-relaxed">
-                    "Tempat ngopi favorit buat santai sambil kerja.
-                    Kopinya premium!"
-                </p>
-
             </div>
 
         </div>
-
     </div>
-
 </section>
 
-<!-- ================= FOOTER ================= -->
-<footer id="kontak"
-class="bg-[#2a1b15] text-white py-16 px-6">
-
-    <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
-
-        <div>
-
-            <div class="flex items-center gap-2 mb-6 text-xl font-bold">
-                <i class="fas fa-coffee text-orange-500"></i>
-                Ngopi Yuk!
+<!-- ================= FOOTER SECTION ================= -->
+<footer id="kontak" class="bg-coffee-dark text-white pt-20 pb-8 px-6 border-t border-white/5">
+    <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 max-w-7xl mb-16">
+        
+        <!-- Info Brand -->
+        <div class="space-y-6">
+            <div class="flex items-center gap-3 text-2xl font-bold">
+                <i class="fas fa-coffee text-amber-500"></i>
+                <span class="tracking-tight">Ngopi Yuk!</span>
             </div>
-
-            <p class="text-xs text-gray-400 leading-relaxed mb-6">
-                Ngopi bukan sekadar minum kopi.
+            <p class="text-xs text-stone-400 leading-relaxed max-w-sm font-light">
+                Ngopi bukan sekadar meminum kopi, melainkan seni menghargai setiap tetes proses dan cerita di baliknya.
             </p>
-
-            <div class="flex gap-4 mb-4">
-                <i class="fab fa-facebook"></i>
-                <i class="fab fa-instagram"></i>
-                <i class="fab fa-twitter"></i>
-                <i class="fab fa-tiktok"></i>
+            <div class="flex gap-4 text-stone-400 text-sm">
+                <a href="#" class="hover:text-amber-400 transition"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="hover:text-amber-400 transition"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="hover:text-amber-400 transition"><i class="fab fa-x-twitter"></i></a>
+                <a href="#" class="hover:text-amber-400 transition"><i class="fab fa-tiktok"></i></a>
             </div>
-
-            <p class="text-xs">
-                <i class="fas fa-map-marker-alt text-orange-500 mr-2"></i>
+            <p class="text-xs text-stone-300 flex items-center gap-2 font-light">
+                <i class="fas fa-map-marker-alt text-amber-500"></i>
                 Tanah Putih, Rokan Hilir, Riau
             </p>
-
         </div>
 
-        <div class="grid grid-cols-2 gap-4 text-xs">
-
+        <!-- Tautan Navigasi -->
+        <div class="grid grid-cols-2 gap-6 text-xs">
             <div>
-
-                <h4 class="font-bold mb-4 uppercase">
-                    Halaman
-                </h4>
-
-                <ul class="space-y-2">
-                    <li>Home</li>
-                    <li>Menu</li>
-                    <li>Tentang</li>
+                <h4 class="font-semibold mb-4 uppercase tracking-wider text-amber-500">Halaman</h4>
+                <ul class="space-y-2.5 text-stone-400 font-light">
+                    <li><a href="#" class="hover:text-white transition">Home</a></li>
+                    <li><a href="#menu" class="hover:text-white transition">Menu</a></li>
+                    <li><a href="#tentang" class="hover:text-white transition">Tentang Kami</a></li>
                 </ul>
-
             </div>
-
             <div>
-
-                <h4 class="font-bold mb-4 uppercase">
-                    Hubungi Kami
-                </h4>
-
-                <p>
-                    ridhouiux@gmail.com
-                </p>
-
-                <p>
-                    +62 823-6193-2285
-                </p>
-
+                <h4 class="font-semibold mb-4 uppercase tracking-wider text-amber-500">Hubungi Kami</h4>
+                <ul class="space-y-2.5 text-stone-400 font-light">
+                    <li class="break-all"><a href="mailto:ridhouiux@gmail.com" class="hover:text-white transition">ridhouiux@gmail.com</a></li>
+                    <li><a href="tel:+6282361932285" class="hover:text-white transition">+62 823-6193-2285</a></li>
+                </ul>
             </div>
-
         </div>
 
-        <div class="flex flex-col justify-end">
-
-            <div class="flex">
-
-                <input type="text"
-                id="emailInput"
-                placeholder="Alamat Email"
-                class="bg-[#d7b99c] p-2 text-black text-xs w-full">
-
-                <button id="subscribeBtn"
-                class="bg-orange-600 px-4 py-2 text-xs font-bold">
-
-                    Berlangganan
-
+        <!-- Newsletter Subscriptions -->
+        <div class="flex flex-col justify-start space-y-4">
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-amber-500">Berlangganan Promo</h4>
+            <p class="text-xs text-stone-400 font-light">Dapatkan info menu baru dan diskon menarik langsung di emailmu.</p>
+            <div class="flex overflow-hidden rounded-xl bg-white/5 border border-white/10 p-1 focus-within:border-amber-500 transition-all">
+                <input type="email" id="emailInput" placeholder="Alamat Email Anda" class="bg-transparent px-3 py-2 text-white text-xs w-full focus:outline-none placeholder:text-stone-500">
+                <button id="subscribeBtn" class="bg-amber-600 hover:bg-amber-700 active:scale-95 text-white px-5 py-2 rounded-lg text-xs font-medium tracking-wide transition-all whitespace-nowrap">
+                    Join
                 </button>
-
             </div>
-
         </div>
-
     </div>
 
-    <div class="border-t border-gray-700 mt-12 pt-6 text-center text-[10px] text-gray-500">
-        © <span id="year"></span> Ngopi Yuk! | Designed by M. Ridho Adha
+    <!-- Copyright -->
+    <div class="border-t border-white/5 text-center text-[11px] text-stone-500 pt-8 mt-4 font-light tracking-wide">
+        &copy; <span id="year"></span> Ngopi Yuk! | Designed with <i class="fas fa-heart text-amber-600 mx-0.5"></i> by M. Ridho Adha
     </div>
 </footer>
+
 <script src="script.js"></script>
 </body>
 </html>
